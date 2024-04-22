@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Course, Profile, Purchase } from '@prisma/client';
 
 export class UserEntity {
   @ApiProperty()
@@ -13,4 +14,10 @@ export class UserEntity {
   refreshToken: string;
   @ApiProperty()
   passwordHash: string;
+  @ApiProperty()
+  profile?: Profile;
+  @ApiProperty()
+  purchase:Purchase[];
+  @ApiProperty()
+  ownCourses:Course[];
 }

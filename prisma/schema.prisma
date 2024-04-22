@@ -52,11 +52,14 @@ model CourseMaterial {
 }
 
 model Lessons {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  part     Int
-  name     String
-  course   Course? @relation(fields: [courseId], references: [id])
-  courseId String? @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  part         String
+  name         String
+  content      String // Содержание урока (текст, ссылки и т. д.)
+  contentVideo String[] // Содержание урока (видео если есть)
+  duration     String? // Продолжительность урока
+  course       Course?  @relation(fields: [courseId], references: [id])
+  courseId     String?  @db.ObjectId
 }
 
 model User {

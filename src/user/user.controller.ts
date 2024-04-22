@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
-import { RefreshTokenGuard } from '../guard/refreshToken.guard';
+import { RefreshTokenGuard } from '../common/guard/refreshToken.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiSecurity, ApiTags, ApiNotFoundResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { Tokens } from './entity/token.entity';
 import { SignInUserDto } from './dto/signIn-user.dto';

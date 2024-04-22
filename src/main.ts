@@ -13,7 +13,6 @@ async function bootstrap() {
     .setTitle('TRobot api')
     .setDescription('The TRobot API description')
     .setVersion('1.0')
-    .addTag('API')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

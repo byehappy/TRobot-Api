@@ -109,7 +109,7 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const existingUser = await this.findById(id);
     if (!existingUser) {
-      throw new NotFoundException('Пользователь с таким логином или почтой уже существует');
+      throw new NotFoundException('Данный пользователь не существует');
     }
     if (updateUserDto.passwordHash) {
       updateUserDto.passwordHash = await bcrypt.hash(updateUserDto.passwordHash, 10);
