@@ -1,32 +1,46 @@
 import { Category, CourseMaterial, Lessons, Purchase, User } from '@prisma/client';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
+import { UserEntity } from '../../user/entity/user.entity';
+import { Lesson } from '../../lessons/entities/lesson.entity';
 
+@ApiExtraModels(UserEntity,Lesson)
 export class CourseEntity {
-  @ApiProperty()
+  @ApiProperty({ example: '1', description: 'Уникальный идентификатор курса' })
   id: string;
-  @ApiProperty()
+
+  @ApiProperty({ example: 'Web Development', description: 'Название курса' })
   title: string;
-  @ApiProperty()
+
+  @ApiProperty({ example: 'Learn web development from scratch', description: 'Описание курса' })
   description?: string;
-  @ApiProperty()
+
+  @ApiProperty({ example: ['web', 'development'], description: 'Теги курса' })
   tags: string[];
-  @ApiProperty()
+
+  @ApiProperty({ type: () => UserEntity, description: 'Автор курса' })
   author: User;
-  @ApiProperty()
+
+  @ApiProperty({ example: 60, description: 'Продолжительность курса в минутах' })
   duration?: number;
-  @ApiProperty()
+
+  @ApiProperty({ example: new Date(), description: 'Дата создания курса' })
   createdAt: Date;
-  @ApiProperty()
+
+  @ApiProperty({ example: new Date(), description: 'Дата последнего обновления курса' })
   updatedAt: Date;
-  @ApiProperty()
+
+  @ApiProperty({ description: 'Категории курса' })
   categories: Category[];
-  @ApiProperty()
+
+  @ApiProperty({ example: 100, description: 'Цена курса в валюте' })
   price: number;
-  @ApiProperty()
+
+  @ApiProperty({ type: ()=> Lesson,description: 'Уроки курса' })
   lessons: Lessons[];
-  @ApiProperty()
+
+  @ApiProperty({description: 'Список покупок курса' })
   purchase: Purchase[];
-  @ApiProperty()
+
+  @ApiProperty({ description: 'Материалы курса' })
   courseMaterial?: CourseMaterial;
 }
-
