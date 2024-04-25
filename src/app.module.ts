@@ -4,8 +4,10 @@ import { UserModule } from './user/user.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { ProfileModule } from './profile/profile.module';
 import { CategoryModule } from './category/category.module';
+import { PurchaseModule } from './purchase/purchase.module';
+import { CourseMaterialModule } from './course-material/course-material.module';
 
 @Module({
-  imports: [CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule],
+  imports: [CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule],
 })
 export class AppModule {}
