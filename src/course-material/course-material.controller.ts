@@ -29,7 +29,7 @@ export class CourseMaterialController {
   @ApiParam({ name: 'id', description: 'Идентификатор материала курса' })
   @ApiResponse({ status: 200, description: 'Материал курса', type: CourseMaterial })
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<CourseMaterial> {
+  async findOne(@Param('id') id: string) {
     return this.courseMaterialService.findOne(id);
   }
 

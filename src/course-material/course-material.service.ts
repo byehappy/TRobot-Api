@@ -22,7 +22,7 @@ export class CourseMaterialService {
   findOne(id: string) {
     return this.prisma.courseMaterial.findFirst({
       where:{
-        id:id
+        courseId:id
       }
     });
   }

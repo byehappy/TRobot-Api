@@ -20,6 +20,7 @@ model Course {
   categoryIDs    String[]        @db.ObjectId
   categories     Category[]      @relation(fields: [categoryIDs], references: [id])
   price          Int
+  iconUrl        String
   lessons        Lessons[]
   purchase       Purchase[]
   courseMaterial CourseMaterial?

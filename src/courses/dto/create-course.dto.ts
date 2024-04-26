@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsArray, IsInt, Min, IsNotEmpty, IsDate } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsInt, Min, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCourseDto {
@@ -38,11 +38,8 @@ export class CreateCourseDto {
   @ApiProperty()
   price: number;
 
-  @IsDate()
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty()
-  createdAt: Date;
-
-  @IsDate()
-  @ApiProperty()
-  updatedAt: Date;
+  iconUrl: string;
 }

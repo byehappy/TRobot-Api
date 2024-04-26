@@ -35,6 +35,9 @@ export class CourseEntity {
   @ApiProperty({ example: 100, description: 'Цена курса в валюте' })
   price: number;
 
+  @ApiProperty({ example: "", description: 'Ссылка на иконку курса' })
+  iconUrl: string;
+
   @ApiProperty({ type: ()=> Lesson,description: 'Уроки курса' })
   lessons: Lessons[];
 
