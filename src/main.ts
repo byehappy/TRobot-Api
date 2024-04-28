@@ -5,10 +5,9 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.useGlobalPipes(new ValidationPipe())
   app.setGlobalPrefix('api')
-  app.enableCors()
+  app.enableCors({credentials:true,origin:true,allowedHeaders:'*'})
   const config = new DocumentBuilder()
     .setTitle('TRobot api')
     .setDescription('The TRobot API description')

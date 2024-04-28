@@ -131,8 +131,9 @@ export class UserService {
     );
   }
 
-  async refreshTokens(tokens: { accessToken: string; refreshToken: string }, id: string) {
-    const user = await this.findById(id);
+  async refreshTokens(tokens: { accessToken: string; refreshToken: string }) {
+    const userInToken = this.decodeToken(tokens.accessToken)
+    const user = await this.findById(userInToken.id);
     if (!user || !user.refreshToken)
       throw new ForbiddenException('Доступ запрещен');
 
@@ -141,16 +142,18 @@ export class UserService {
 
     // Проверяем, истек ли срок действия access token
     if (!accessTokenValid) {
-      // Если истек срок действия access token, обновляем оба токена
+      // Если истек срок действия refresh token, обновляем оба токена
       if (!refreshTokenValid) {
-        const payload = { login: user.login, email: user.email };
-        const newAccessToken = this.generateAccessToken(payload);
-        const newRefreshToken = this.generateRefreshToken(payload);
+        const accessPayload = {login:user.login,email:user.email,id:user.id,role:user.role};
+        const refreshPayload = { login: user.login, email: user.email };
+        const newAccessToken = this.generateAccessToken(accessPayload);
+        const newRefreshToken = this.generateRefreshToken(refreshPayload);
         await this.updateRefreshToken(user.id,newRefreshToken)
         // Возвращаем новые токены
         return {
           accessToken: newAccessToken,
           refreshToken: newRefreshToken,
+          user
         };
       }
 
@@ -162,6 +165,7 @@ export class UserService {
       return {
         accessToken: newAccessToken,
         refreshToken: tokens.refreshToken,
+        user
       };
     }
 
@@ -177,11 +181,16 @@ export class UserService {
       return {
         accessToken: tokens.accessToken,
         refreshToken: newRefreshToken,
+        user
       };
     }
 
     // Токены валидны, возвращаем их без изменений
-    return tokens;
+    return {
+      accessToken:tokens.accessToken,
+      refreshToken:tokens.refreshToken,
+      user
+    };
   }
 
   private async updateRefreshToken(userId: string, newRefreshToken: string): Promise<void> {
@@ -215,5 +224,13 @@ export class UserService {
 
   private generateRefreshToken(payload: any): string {
     return this.jwtService.sign(payload, { expiresIn: '30d' });
+  }
+
+  decodeToken(token: string) {
+    try {
+      return this.jwtService.decode(token);
+    } catch (error) {
+      throw new Error('Невозможно расшифровать токен');
+    }
   }
 }

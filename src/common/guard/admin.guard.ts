@@ -22,14 +22,6 @@ export class AdminGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     try {
-      const requiredAdmin = this.reflector.getAllAndOverride<boolean>(
-        Role.ADMIN,
-        [context.getHandler(), context.getClass()],
-      );
-      if (!requiredAdmin) {
-        return true;
-      }
-
       const req = context.switchToHttp().getRequest();
       const authHeader = req.headers.authorization;
       const bearer = authHeader.split(' ')[0];
@@ -43,7 +35,10 @@ export class AdminGuard implements CanActivate {
 
       const user = this.jwtService.verify(token);
       req.user = user;
-      return user.role;
+      if (user.role !== Role.ADMIN){
+        throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN);
+      }
+      return true
     } catch (error) {
       throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN);
     }
