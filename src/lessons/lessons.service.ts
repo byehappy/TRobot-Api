@@ -15,8 +15,12 @@ export class LessonsService {
     });
   }
 
-  findAll() {
-    return this.prisma.lessons.findMany();
+  findAll(id: string) {
+    return this.prisma.lessons.findMany({
+      where:{
+        courseId:id
+      }
+    });
   }
 
   findOne(id: string) {

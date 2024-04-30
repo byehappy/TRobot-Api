@@ -29,6 +29,7 @@ import { CheckTokenDto, TokenDto } from './dto/token.dto';
 import { RefreshTokenGuard } from '../common/guard/refreshToken.guard';
 import { AccessTokenGuard } from '../common/guard/accessToken.guard';
 import { AdminGuard } from '../common/guard/admin.guard';
+import { ChangeUserRoleDto } from './dto/change-role.dto';
 
 @ApiTags('users')
 @Controller('user')
@@ -152,4 +153,27 @@ export class UserController {
     }
   }
 
+  @ApiOperation({ summary: 'Изменить роль пользователя' })
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  @ApiOkResponse({ type: UserEntity })
+  @ApiNotFoundResponse({ description: 'Пользователь не найден' })
+  @ApiBadRequestResponse({ description: 'Ошибка при изменении роли пользователя' })
+  @Patch(':id/change-role')
+  async changeUserRole(@Param('id') id: string, @Body() changeUserRoleDto: ChangeUserRoleDto): Promise<User> {
+    try {
+      // Получаем информацию о пользователе
+      const user = await this.userService.findOne(id);
+      if (!user) {
+        throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
+      }
+
+      // Изменяем роль пользователя
+      const updatedUser = await this.userService.changeUserRole(user, changeUserRoleDto.role);
+
+      return updatedUser;
+    } catch (error) {
+      throw new HttpException('Ошибка при изменении роли пользователя', HttpStatus.BAD_REQUEST);
+    }
+  }
 }

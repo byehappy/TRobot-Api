@@ -64,15 +64,16 @@ model Lessons {
 }
 
 model User {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  role         Role       @default(USER)
-  login        String     @unique
-  email        String     @unique
-  profile      Profile?
-  ownCourses   Course[]   @relation("AuthorCourses")
-  purchase     Purchase[]
-  refreshToken String
-  passwordHash String
+  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
+  role               Role                @default(USER)
+  login              String              @unique
+  email              String              @unique
+  profile            Profile?
+  ownCourses         Course[]            @relation("AuthorCourses")
+  purchase           Purchase[]
+  refreshToken       String
+  passwordHash       String
+  teacherApplication TeacherApplication?
 }
 
 model Purchase {
@@ -90,6 +91,22 @@ model Profile {
   phone  String
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique @db.ObjectId
+}
+
+model TeacherApplication {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique @db.ObjectId
+  info      String
+  status    Status   @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum Role {

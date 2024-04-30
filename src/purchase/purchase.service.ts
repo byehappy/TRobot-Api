@@ -15,8 +15,12 @@ export class PurchaseService {
     });
   }
 
-  findAll() {
-    return this.prisma.purchase.findMany();
+  findAll(id: string) {
+    return this.prisma.purchase.findMany({
+      where:{
+        userId:id
+      }
+    });
   }
 
   findOne(id: string) {

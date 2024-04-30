@@ -1,7 +1,7 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -232,5 +232,16 @@ export class UserService {
     } catch (error) {
       throw new Error('Невозможно расшифровать токен');
     }
+  }
+
+  changeUserRole(user:User,role:Role){
+    return this.prisma.user.update({
+      where:{
+        id:user.id
+      },
+      data:{
+        role:role
+      }
+    })
   }
 }

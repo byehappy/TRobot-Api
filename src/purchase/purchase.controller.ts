@@ -18,11 +18,11 @@ export class PurchaseController {
     return this.purchaseService.create(createPurchaseDto);
   }
 
-  @ApiOperation({ summary: 'Получить все записи о покупках' })
+  @ApiOperation({ summary: 'Получить все записи о покупках конкретного пользователя' })
   @ApiResponse({ status: 200, description: 'Список записей о покупках', type: [Purchase] })
-  @Get()
-  async findAll(): Promise<Purchase[]> {
-    return this.purchaseService.findAll();
+  @Get("/user/:id")
+  async findAll(@Param('id') id: string): Promise<Purchase[]> {
+    return this.purchaseService.findAll(id);
   }
 
   @ApiOperation({ summary: 'Получить запись о покупке по идентификатору' })
@@ -38,7 +38,7 @@ export class PurchaseController {
   @ApiBody({ type: UpdatePurchaseDto }) // Описываем тело запроса
   @ApiResponse({ status: 200, description: 'Запись о покупке успешно обновлена', type: Purchase })
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updatePurchaseDto: UpdatePurchaseDto): Promise<Purchase> {
+  async update(@Param('id') id: string, @Body() updatePurchaseDto: UpdatePurchaseDto){
     return this.purchaseService.update(id, updatePurchaseDto);
   }
 

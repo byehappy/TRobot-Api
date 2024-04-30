@@ -20,9 +20,9 @@ export class LessonsController {
 
   @ApiOperation({ summary: 'Получить все уроки' })
   @ApiOkResponse({ description: 'Все уроки успешно получены.',type:[Lesson] })
-  @Get()
-  findAll() {
-    return this.lessonsService.findAll();
+  @Get("/course/:id")
+  findAll(@Param('id') id: string) {
+    return this.lessonsService.findAll(id);
   }
 
   @ApiOperation({ summary: 'Получить урок по ID' })

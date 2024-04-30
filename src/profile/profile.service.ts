@@ -22,7 +22,7 @@ export class ProfileService {
   findOne(id: string) {
     return this.prisma.profile.findFirst({
       where:{
-        id:id
+        userId:id
       }
     });
   }
@@ -30,7 +30,7 @@ export class ProfileService {
   update(id: string, updateProfileDto: UpdateProfileDto) {
     return this.prisma.profile.update({
       where:{
-        id:id
+        userId:id
       },
       data:{
         ...updateProfileDto
@@ -41,7 +41,7 @@ export class ProfileService {
   remove(id: string) {
     return this.prisma.profile.delete({
       where:{
-        id:id
+        userId:id
       }
     });
   }
