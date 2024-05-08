@@ -49,4 +49,18 @@ export class TeacherApplicationController {
   remove(@Param('id') id: string) {
     return this.teacherApplicationService.remove(id);
   }
+  @ApiOperation({ summary: 'Принять заявку на преподавателя' })
+  @ApiResponse({ status: 200, description: 'Заявка успешно принята', type: TeacherApplication })
+  @ApiNotFoundResponse({ description: 'Заявка на преподавателя не найдена' })
+  @Get('/apply/:id')
+  apply(@Param('id') id: string) {
+    return this.teacherApplicationService.apply(id);
+  }
+  @ApiOperation({ summary: 'Отклонить заявку на преподавателя' })
+  @ApiResponse({ status: 200, description: 'Заявка успешно отклонена', type: TeacherApplication })
+  @ApiNotFoundResponse({ description: 'Заявка на преподавателя не найдена' })
+  @Get('/decline/:id')
+  reject(@Param('id') id: string) {
+    return this.teacherApplicationService.reject(id);
+  }
 }

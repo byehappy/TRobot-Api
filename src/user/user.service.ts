@@ -73,7 +73,11 @@ export class UserService {
     if (userValid && passwordValid) {
       return userValid;
     }
-    throw new ConflictException('Некорректный никнейм или пароль');
+    if(!userValid){
+    throw new ConflictException('Неправильный логин');
+    } else if (!passwordValid){
+      throw new ConflictException('Неправильный пароль');
+    }
   }
 
   async login(login:string,password:string) {

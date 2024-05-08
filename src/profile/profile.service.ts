@@ -27,15 +27,25 @@ export class ProfileService {
     });
   }
 
-  update(id: string, updateProfileDto: UpdateProfileDto) {
-    return this.prisma.profile.update({
-      where:{
-        userId:id
+  async update(id: string, updateProfileDto: UpdateProfileDto) {
+    const userdata = await this.prisma.user.update({
+      where: {
+        id: id
       },
-      data:{
-        ...updateProfileDto
+      data: {
+        email: updateProfileDto.email
+      }
+    })
+    const profileUpdate = await this.prisma.profile.update({
+      where: {
+        userId: id
+      },
+      data: {
+        bio: updateProfileDto.bio,
+        phone: updateProfileDto.phone,
       }
     });
+    return {...profileUpdate,email:userdata.email}
   }
 
   remove(id: string) {

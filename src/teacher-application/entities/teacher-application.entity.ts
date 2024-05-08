@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '../../user/entity/user.entity';
 
 export class TeacherApplication {
   @ApiProperty()
   id: string;
 
-  @ApiProperty()
-  user: UserEntity;
+  @ApiProperty({example:"1a2sd3asd1a3"})
+  userId: string;
 
   @ApiProperty()
   info: string;

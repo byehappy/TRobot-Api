@@ -45,7 +45,7 @@ export class UserController {
       const user = await this.userService.registration(userData);
       return user;
     } catch (error) {
-      throw new HttpException('Ошибка при регистрации пользователя', HttpStatus.BAD_REQUEST);
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -59,7 +59,7 @@ export class UserController {
       const data = await this.userService.login(signInDto.login, signInDto.passwordHash);
       return data;
     } catch (error) {
-      throw new HttpException('Ошибка при авторизации пользователя', HttpStatus.BAD_REQUEST);
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 
