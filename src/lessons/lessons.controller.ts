@@ -3,7 +3,7 @@ import { LessonsService } from './lessons.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { ApiTags, ApiOkResponse, ApiOperation, ApiParam, ApiCreatedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiNoContentResponse } from '@nestjs/swagger';
-import { Lesson } from './entities/lesson.entity';
+import { Lesson, LessonListEntity } from './entities/lesson.entity';
 
 @Controller('lessons')
 @ApiTags('lessons')
@@ -20,6 +20,7 @@ export class LessonsController {
 
   @ApiOperation({ summary: 'Получить все уроки' })
   @ApiOkResponse({ description: 'Все уроки успешно получены.',type:[Lesson] })
+  @ApiParam({ name: 'id', description: 'ID курса', type: 'string' })
   @Get("/course/:id")
   findAll(@Param('id') id: string) {
     return this.lessonsService.findAll(id);
@@ -51,5 +52,14 @@ export class LessonsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.lessonsService.remove(id);
+  }
+
+  @ApiOperation({ summary: 'Вывести заголовки и уроки курса' })
+  @ApiNoContentResponse({ description: 'Все заголовки и уроки курса получены.', type:LessonListEntity })
+  @ApiNotFoundResponse({ description: 'Заголовки и уроки курса не найдены.' })
+  @ApiParam({ name: 'id', description: 'ID курса', type: 'string' })
+  @Get('/lesson-list/:id')
+  findListCourse(@Param('id') id: string) {
+    return this.lessonsService.findListCourse(id);
   }
 }

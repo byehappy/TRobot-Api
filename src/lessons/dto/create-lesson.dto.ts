@@ -13,17 +13,16 @@ export class CreateLessonDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
   @ApiProperty()
-  content: string;
+  content: string | null;
 
   @IsArray()
   @ApiProperty()
-  contentVideo: string[];
+  contentVideo: string[] | null;
 
   @IsString()
   @ApiProperty()
-  duration: string;
+  duration!: string | null;
 
   @IsString()
   @IsNotEmpty()
