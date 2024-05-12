@@ -17,10 +17,6 @@ export class CreateCourseMaterialDto {
   @IsString()
   about: string;
 
-  @ApiProperty({ example: 'Statistics about the course', description: 'Статистика курса, например, количество студентов, успешно завершивших курс' })
-  @IsOptional()
-  @IsString()
-  statistics: string;
 
   @ApiProperty({ example: ['HTML', 'CSS', 'JavaScript'], description: 'Умения, которые студенты приобретут после завершения курса' })
   @IsOptional()
@@ -34,11 +30,6 @@ export class CreateCourseMaterialDto {
   @IsString({ each: true })
   advantages: string[];
 
-  @ApiProperty({ example: ['Great course!', 'Highly recommended'], description: 'Отзывы или рекомендации студентов' })
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  testimonials: string[];
 
   @ApiProperty({ example: 'Curriculum details', description: 'Содержание курса' })
   @IsNotEmpty()

@@ -38,10 +38,8 @@ model CourseMaterial {
   courseId      String   @unique @db.ObjectId
   profession    String // Описание профессии, например, "Веб-разработчик"
   about         String // Дополнительная информация о курсе
-  statistics    String // Статистика курса, например, количество студентов, успешно завершивших курс
   skillsLearned String[] // Умения, которые студенты приобретут после завершения курса
   advantages    String[] // Преимущества курса
-  testimonials  String[] // Отзывы или рекомендации студентов
   curriculum    String // Содержание курса
   requirements  String[] // Требования к участию в курсе
   resources     String[] // Дополнительные ресурсы или материалы

@@ -7,8 +7,12 @@ import { CategoryModule } from './category/category.module';
 import { PurchaseModule } from './purchase/purchase.module';
 import { CourseMaterialModule } from './course-material/course-material.module';
 import { TeacherApplicationModule } from './teacher-application/teacher-application.module';
+import { JwtModule } from '@nestjs/jwt';
+import * as process from 'process';
 
 @Module({
-  imports: [CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule],
+  imports: [JwtModule.register({
+    secret: process.env.SecretJWT,global:true
+  }),CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule],
 })
 export class AppModule {}

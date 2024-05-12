@@ -2,9 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as basicAuth from "express-basic-auth";
+import * as process from 'process';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use('/docs*',basicAuth({
+    challenge:true,
+    users:{
+     Admin :`${process.env.SWAGGER_PASSWORD}`
+    }
+  }))
   app.useGlobalPipes(new ValidationPipe())
   app.setGlobalPrefix('api')
   app.enableCors({credentials:true,origin:true,allowedHeaders:'*'})
@@ -15,7 +23,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(3001);
   console.log(`Application is running on: ${await app.getUrl()}`);

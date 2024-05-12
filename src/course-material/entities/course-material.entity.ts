@@ -13,17 +13,11 @@ export class CourseMaterial {
   @ApiProperty({ example: 'Дополнительная информация о курсе', description: 'Дополнительная информация о курсе' })
   about: string;
 
-  @ApiProperty({ example: 'Статистика курса', description: 'Статистика курса, например, количество студентов, успешно завершивших курс' })
-  statistics: string;
-
   @ApiProperty({ example: ['HTML', 'CSS', 'JavaScript'], description: 'Умения, которые студенты приобретут после завершения курса' })
   skillsLearned: string[];
 
   @ApiProperty({ example: ['Интерактивные задания', 'Контрольные вопросы'], description: 'Преимущества курса' })
   advantages: string[];
-
-  @ApiProperty({ example: ['Отзыв 1', 'Отзыв 2'], description: 'Отзывы или рекомендации студентов' })
-  testimonials: string[];
 
   @ApiProperty({ example: 'Содержание курса', description: 'Содержание курса' })
   curriculum: string;
