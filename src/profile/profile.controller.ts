@@ -40,7 +40,7 @@ export class ProfileController {
   }
 
   @ApiOperation({ summary: 'Получить профиль по ID пользователя - accessToken' })
-  @ApiOkResponse({ description: 'Найденный профиль', type: ProfileEntity })
+  @ApiOkResponse({ description: 'Найденный профиль', type: UpdateProfileEntity })
   @ApiNotFoundResponse({ description: 'Профиль не найден' })
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)

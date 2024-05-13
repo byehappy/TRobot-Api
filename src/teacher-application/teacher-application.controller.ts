@@ -8,7 +8,7 @@ import {
   ApiResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
-  ApiBearerAuth,
+  ApiBearerAuth, ApiParam,
 } from '@nestjs/swagger';
 import { TeacherApplication } from './entities/teacher-application.entity';
 import { AdminGuard } from '../common/guard/admin.guard';
@@ -41,6 +41,7 @@ export class TeacherApplicationController {
   @ApiOperation({ summary: 'Получить заявку на преподавателя по идентификатору - accessToken' })
   @ApiResponse({ status: 200, description: 'Вернуть заявку на преподавателя', type: TeacherApplication })
   @ApiNotFoundResponse({ description: 'Заявка на преподавателя не найдена' })
+  @ApiParam({ name: 'id', description: 'Идентификатор пользователя' })
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)
   @Get(':id')

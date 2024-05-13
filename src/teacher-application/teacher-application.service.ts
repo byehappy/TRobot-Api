@@ -26,7 +26,7 @@ export class TeacherApplicationService {
   findOne(id: string) {
     return this.prisma.teacherApplication.findFirst({
       where:{
-        id:id
+        userId:id
       }
     });
   }
