@@ -70,8 +70,6 @@ export class LessonsService {
           id: lesson.id,
           name: lesson.name,
           part: lesson.part,
-          content: lesson.content,
-          contentVideo: lesson.contentVideo,
           duration: lesson.duration,
           courseId: lesson.courseId,
         });
