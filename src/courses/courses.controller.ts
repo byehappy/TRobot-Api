@@ -10,7 +10,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserEntity } from '../user/entity/user.entity';
 import { CourseEntity } from './entities/course.entity';
 import { TeacherGuard } from '../common/guard/teacher.guard';
 
@@ -37,7 +36,7 @@ export class CoursesController {
   }
 
   @ApiOperation({ summary: 'Найти курс по его Id' })
-  @ApiOkResponse({ type: UserEntity })
+  @ApiOkResponse({ type: CourseEntity })
   @ApiNotFoundResponse({ description: 'Курс не найден' })
   @Get(':id')
   findOne(@Param('id') id: string) {

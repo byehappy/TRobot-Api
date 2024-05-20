@@ -16,6 +16,8 @@ import {
 import { Lesson, LessonListEntity } from './entities/lesson.entity';
 import { AccessTokenGuard } from '../common/guard/accessToken.guard';
 import { TeacherGuard } from '../common/guard/teacher.guard';
+import { CourseAccessGuard } from '../common/guard/courseAccess.guard';
+import { LessonAccessGuard } from '../common/guard/lessonAccess.guard';
 
 @Controller('lessons')
 @ApiTags('lessons')
@@ -44,6 +46,7 @@ export class LessonsController {
   @ApiOkResponse({ description: 'Урок успешно получен.',type:Lesson })
   @ApiNotFoundResponse({ description: 'Урок не найден.' })
   @ApiParam({ name: 'id', description: 'ID урока', type: 'string' })
+  @UseGuards(LessonAccessGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.lessonsService.findOne(id);
@@ -78,6 +81,7 @@ export class LessonsController {
   @ApiParam({ name: 'id', description: 'ID курса', type: 'string' })
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)
+  @UseGuards(CourseAccessGuard)
   @Get('/lesson-list/:id')
   findListCourse(@Param('id') id: string) {
     return this.lessonsService.findListCourse(id);
