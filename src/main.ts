@@ -1,12 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import * as basicAuth from "express-basic-auth";
 import * as process from 'process';
+import { PrismaService } from './prisma/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useLogger(new Logger());
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
   app.use('/docs*',basicAuth({
     challenge:true,
     users:{

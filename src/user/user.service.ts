@@ -1,10 +1,10 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from '../prisma.service';
 import { Prisma, Role, User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
@@ -26,7 +26,7 @@ export class UserService {
     return findUser;
   }
 
-  async getUserByEmail(email: string):Promise<User> {
+  async getUserByEmail(email: string): Promise<User> {
     return await this.prisma.user.findUnique({
       where: {
         email: email,
@@ -34,7 +34,7 @@ export class UserService {
     });
   }
 
-  async getUserByLogin(login: string):Promise<User> {
+  async getUserByLogin(login: string): Promise<User> {
     return await this.prisma.user.findFirst({
       where: {
         login: login,
@@ -67,35 +67,39 @@ export class UserService {
     });
   }
 
-  async validateUser(login:string,password:string):Promise<User> {
+  async validateUser(login: string, password: string): Promise<User> {
     const userValid = await this.getUserByLogin(login);
     const passwordValid = await bcrypt.compare(password, userValid.passwordHash);
     if (userValid && passwordValid) {
       return userValid;
     }
-    if(!userValid){
-    throw new ConflictException('Неправильный логин');
-    } else if (!passwordValid){
+    if (!userValid) {
+      throw new ConflictException('Неправильный логин');
+    } else if (!passwordValid) {
       throw new ConflictException('Неправильный пароль');
     }
   }
 
-  async login(login:string,password:string) {
-    const user = await this.validateUser(login,password)
-    const payload = {login:user.login,email:user.email,id:user.id,role:user.role}
+  async isPasswordCorrect(dtoPassword: string, password: string,): Promise<boolean> {
+    return bcrypt.compare(dtoPassword, password);
+  }
+
+  async login(login: string, password: string) {
+    const user = await this.validateUser(login, password);
+    const payload = { login: user.login, email: user.email, id: user.id, role: user.role };
     const refreshTokenValid = this.validateRefreshToken(user.refreshToken);
-    if(!refreshTokenValid){
-      const refreshToken = this.generateRefreshToken({ login: user.login, email: user.email })
-      await this.updateRefreshToken(user.id,refreshToken)
+    if (!refreshTokenValid) {
+      const refreshToken = this.generateRefreshToken({ login: user.login, email: user.email });
+      await this.updateRefreshToken(user.id, refreshToken);
       return {
-        accessToken: await this.jwtService.signAsync(payload,{expiresIn:'3h'}),
-        refreshToken: refreshToken
-      }
+        accessToken: await this.jwtService.signAsync(payload, { expiresIn: '3h' }),
+        refreshToken: refreshToken,
+      };
     }
-    return{
-      accessToken: await this.jwtService.signAsync(payload,{expiresIn:'3h'}),
-      refreshToken: user.refreshToken
-    }
+    return {
+      accessToken: await this.jwtService.signAsync(payload, { expiresIn: '3h' }),
+      refreshToken: user.refreshToken,
+    };
   }
 
   findAll() {
@@ -103,11 +107,14 @@ export class UserService {
   }
 
   findOne(id: string) {
-    return this.prisma.user.findUnique({
+    return this.prisma.user.findFirst({
       where: {
         id: id,
       },
     });
+  }
+  async findByParams(params: Prisma.UserFindFirstArgs):Promise<User | null> {
+    return this.prisma.user.findFirst(params);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -136,7 +143,7 @@ export class UserService {
   }
 
   async refreshTokens(tokens: { accessToken: string; refreshToken: string }) {
-    const userInToken = this.decodeToken(tokens.accessToken)
+    const userInToken = this.decodeToken(tokens.accessToken);
     const user = await this.findById(userInToken.id);
     if (!user || !user.refreshToken)
       throw new ForbiddenException('Доступ запрещен');
@@ -148,28 +155,28 @@ export class UserService {
     if (!accessTokenValid) {
       // Если истек срок действия refresh token, обновляем оба токена
       if (!refreshTokenValid) {
-        const accessPayload = {login:user.login,email:user.email,id:user.id,role:user.role};
+        const accessPayload = { login: user.login, email: user.email, id: user.id, role: user.role };
         const refreshPayload = { login: user.login, email: user.email };
         const newAccessToken = this.generateAccessToken(accessPayload);
         const newRefreshToken = this.generateRefreshToken(refreshPayload);
-        await this.updateRefreshToken(user.id,newRefreshToken)
+        await this.updateRefreshToken(user.id, newRefreshToken);
         // Возвращаем новые токены
         return {
           accessToken: newAccessToken,
           refreshToken: newRefreshToken,
-          user
+          user,
         };
       }
 
       // Генерируем новый access token
-      const payload = { login: user.login, email: user.email };
+      const payload = { login: user.login, email: user.email, id: user.id, role: user.role };
       const newAccessToken = this.generateAccessToken(payload);
 
       // Возвращаем новые токены
       return {
         accessToken: newAccessToken,
         refreshToken: tokens.refreshToken,
-        user
+        user,
       };
     }
 
@@ -185,15 +192,15 @@ export class UserService {
       return {
         accessToken: tokens.accessToken,
         refreshToken: newRefreshToken,
-        user
+        user,
       };
     }
 
     // Токены валидны, возвращаем их без изменений
     return {
-      accessToken:tokens.accessToken,
-      refreshToken:tokens.refreshToken,
-      user
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      user,
     };
   }
 
@@ -238,14 +245,14 @@ export class UserService {
     }
   }
 
-  changeUserRole(user:User,role:Role){
+  changeUserRole(user: User, role: Role) {
     return this.prisma.user.update({
-      where:{
-        id:user.id
+      where: {
+        id: user.id,
       },
-      data:{
-        role:role
-      }
-    })
+      data: {
+        role: role,
+      },
+    });
   }
 }

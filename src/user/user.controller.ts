@@ -30,6 +30,7 @@ import { RefreshTokenGuard } from '../common/guard/refreshToken.guard';
 import { AccessTokenGuard } from '../common/guard/accessToken.guard';
 import { AdminGuard } from '../common/guard/admin.guard';
 import { ChangeUserRoleDto } from './dto/change-role.dto';
+import AccessRefreshTokens = Auth.AccessRefreshTokens;
 
 @ApiTags('users')
 @Controller('user')
@@ -45,7 +46,7 @@ export class UserController {
       const user = await this.userService.registration(userData);
       return user;
     } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error, HttpStatus.CONFLICT);
     }
   }
 
@@ -54,10 +55,13 @@ export class UserController {
   @ApiBadRequestResponse({ description: 'Ошибка при авторизации пользователя' })
   @HttpCode(200)
   @Post('/login')
-  async login(@Body() signInDto: SignInUserDto) {
+  async login(@Body() signInDto: SignInUserDto):Promise<AccessRefreshTokens> {
     try {
-      const data = await this.userService.login(signInDto.login, signInDto.passwordHash);
-      return data;
+      const tokens = await this.userService.login(signInDto.login, signInDto.passwordHash);
+      return {
+        accessToken:tokens.accessToken,
+        refreshToken:tokens.refreshToken
+      };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }

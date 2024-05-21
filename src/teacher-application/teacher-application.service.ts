@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTeacherApplicationDto } from './dto/create-teacher-application.dto';
 import { UpdateTeacherApplicationDto } from './dto/update-teacher-application.dto';
-import { PrismaService } from '../prisma.service';
+
 import { Role, Status } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class TeacherApplicationService {

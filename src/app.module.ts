@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { CoursesModule } from './courses/courses.module';
 import { UserModule } from './user/user.module';
 import { LessonsModule } from './lessons/lessons.module';
@@ -9,10 +9,17 @@ import { CourseMaterialModule } from './course-material/course-material.module';
 import { TeacherApplicationModule } from './teacher-application/teacher-application.module';
 import { JwtModule } from '@nestjs/jwt';
 import * as process from 'process';
+import { PrismaModule } from './prisma/prisma.module';
+import { AppLoggerMiddleware } from './logger';
 
 @Module({
   imports: [JwtModule.register({
     secret: process.env.SecretJWT,global:true
-  }),CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule],
+  }),PrismaModule,CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule],
 })
-export class AppModule {}
+
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AppLoggerMiddleware).forRoutes('*');
+  }
+}

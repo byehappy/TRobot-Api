@@ -1,6 +1,5 @@
 import {
-  CanActivate,
-  ExecutionContext,
+  CanActivate, ExecutionContext,
   HttpException,
   HttpStatus,
   Injectable,
@@ -22,28 +21,29 @@ export class TeacherGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     try {
-      const token = this.extractAuthToken(context);
+      const req = context.switchToHttp().getRequest();
+      const authHeader = req.headers.authorization;
 
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new UnauthorizedException({
+          message: 'Пользователь не авторизован',
+        });
+      }
+
+      const token = authHeader.split(' ')[1];
       const user = this.jwtService.verify(token);
-      context.switchToHttp().getRequest().user = user;
-      if (user.role !== Role.ADMIN || user.role !== Role.TEACHER){
+      req.user = user;
+
+      if (user.role !== Role.ADMIN && user.role !== Role.TEACHER) {
         throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN);
       }
-      return true
+
+      return true;
     } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
       throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN);
     }
-  }
-  private extractAuthToken(context: ExecutionContext): string {
-    const req = context.switchToHttp().getRequest();
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException({
-        message: 'Пользователь не авторизован',
-      });
-    }
-
-    return authHeader.split(' ')[1];
   }
 }
