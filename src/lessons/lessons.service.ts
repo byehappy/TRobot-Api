@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -9,9 +9,22 @@ export class LessonsService {
     private prisma: PrismaService,
   ) {
   }
-  create(createLessonDto: CreateLessonDto) {
+
+  private async syncCourseWithLesson(id: string) {
+    return await this.prisma.course.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  async create(createLessonDto: CreateLessonDto) {
+    const syncCourse = await this.syncCourseWithLesson(createLessonDto.courseId);
+    if (!syncCourse) {
+      throw new ConflictException('Такого курса не существует', 'courseId');
+    }
     return this.prisma.lessons.create({
-      data:createLessonDto
+      data: createLessonDto
     });
   }
 

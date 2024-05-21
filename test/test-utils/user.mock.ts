@@ -17,7 +17,7 @@ export const createTestToken = (user: Partial<User>) => {
   });
 };
 
-export const mockUser: User = {
+export const mockAdminUser: User = {
   id: new ObjectId().toHexString(),
   email: 'admin@example.com',
   passwordHash: 'hashedpassword', // Обычно это будет хэшированный пароль

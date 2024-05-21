@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PurchaseService } from '../../purchase/purchase.service';
 import { LessonsService } from '../../lessons/lessons.service';
@@ -26,7 +26,7 @@ export class LessonAccessGuard implements CanActivate {
     const hasAccess = await this.checkLessonAccess(userId, lessonId);
 
     if (!hasAccess) {
-      throw new UnauthorizedException('Недостаточно прав для доступа к уроку');
+      throw new ForbiddenException('Недостаточно прав для доступа к уроку');
     }
 
     return true;

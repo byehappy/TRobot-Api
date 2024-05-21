@@ -42,10 +42,11 @@ export class LessonsController {
     return this.lessonsService.findAll(id);
   }
 
-  @ApiOperation({ summary: 'Получить урок по ID' })
+  @ApiOperation({ summary: 'Получить урок по ID - токен с id пользователя у которого куплен курс' })
   @ApiOkResponse({ description: 'Урок успешно получен.',type:Lesson })
   @ApiNotFoundResponse({ description: 'Урок не найден.' })
   @ApiParam({ name: 'id', description: 'ID урока', type: 'string' })
+  @ApiBearerAuth()
   @UseGuards(LessonAccessGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {

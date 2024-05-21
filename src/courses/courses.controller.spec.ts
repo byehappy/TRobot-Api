@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../app.module';
-import { createTestToken, mockTeacherUser, mockUser, mockRegularUser } from '../../test/test-utils/user.mock';
-import { PrismaService } from '../prisma/prisma.service'; // Импортируйте службу Prisma
+import { createTestToken, mockTeacherUser, mockAdminUser, mockRegularUser } from '../../test/test-utils/user.mock';
+import { PrismaService } from '../prisma/prisma.service';
 
 describe('CoursesController (e2e)', () => {
   let app: INestApplication;
@@ -11,11 +11,11 @@ describe('CoursesController (e2e)', () => {
   const createdCourseIds: string[] = []; // Массив для хранения идентификаторов созданных курсов
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = module.createNestApplication();
     prisma = app.get<PrismaService>(PrismaService);
     await app.init();
   });
@@ -26,12 +26,12 @@ describe('CoursesController (e2e)', () => {
   });
   describe("valid dto create course",()=>{
     it('/courses (POST) should create a course with admin token', async () => {
-      const token = createTestToken(mockUser);
+      const token = createTestToken(mockAdminUser);
       const createCourseDto = {
         title: 'Test Course',
         description: 'Test Description',
         tags: ['test', 'course'],
-        authorId: mockUser.id,
+        authorId: mockAdminUser.id,
         price: 100,
         iconUrl: 'abc',
       };

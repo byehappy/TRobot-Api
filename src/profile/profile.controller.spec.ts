@@ -1,14 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileController } from './profile.controller';
-import { ProfileService } from './profile.service';
+import { AppModule } from '../app.module';
 
 describe('ProfileController', () => {
   let controller: ProfileController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ProfileController],
-      providers: [ProfileService],
+      imports: [AppModule],
     }).compile();
 
     controller = module.get<ProfileController>(ProfileController);
