@@ -11,11 +11,12 @@ import { JwtModule } from '@nestjs/jwt';
 import * as process from 'process';
 import { PrismaModule } from './prisma/prisma.module';
 import { AppLoggerMiddleware } from './logger';
+import HealthModule from './health/health.module';
 
 @Module({
   imports: [JwtModule.register({
     secret: process.env.SecretJWT,global:true
-  }),PrismaModule,CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule],
+  }),PrismaModule,CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule,HealthModule],
 })
 
 export class AppModule implements NestModule {

@@ -6,16 +6,11 @@ export class AppLoggerMiddleware implements NestMiddleware {
   private logger = new Logger('HTTP');
 
   use(request: Request, response: Response, next: NextFunction): void {
-    const { ip, method, path: url, headers, body } = request;
+    const { ip, method, path: url, headers } = request;
     const userAgent = request.get('user-agent') || '';
 
     // Логирование заголовков запроса
     this.logger.log(`Request Headers: ${JSON.stringify(headers)}`);
-
-    // Логирование тела запроса (если оно есть)
-    if (Object.keys(body).length) {
-      this.logger.log(`Request Body: ${JSON.stringify(body)}`);
-    }
 
     response.on('close', () => {
       const { statusCode } = response;

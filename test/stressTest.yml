@@ -1,0 +1,52 @@
+config:
+  target: "http://localhost:3001/api"
+  phases:
+    - duration: 30                  # Продолжительность теста в секундах
+      arrivalRate: 50              # Количество новых пользователей в секунду
+      name: user_login
+    - duration: 30                  # Продолжительность теста в секундах
+      arrivalRate: 50              # Количество новых пользователей в секунду
+      name: get_courses
+    - duration: 30                  # Продолжительность теста в секундах
+      arrivalRate: 50              # Количество новых пользователей в секунду
+      name: get_categories
+    - duration: 30                  # Продолжительность теста в секундах
+      arrivalRate: 50              # Количество новых пользователей в секунду
+      name: get_course_materials
+  payload:
+    - path: "user.csv"
+      loadAll: true
+      fields:
+        - "login"
+        - "password"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: User Login
+    flow:
+      - post:
+          url: "/user/login"
+          json: {
+            login: '{{ login }}',
+            passwordHash: '{{ password }}' }
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
+
+  - name: Get Courses
+    flow:
+      - get:
+          url: "/courses"
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
+
+  - name: Get Categories
+    flow:
+      - get:
+          url: "/category"
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
+
+  - name: Get Course Materials
+    flow:
+      - get:
+          url: "/course-material"
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
