@@ -62,16 +62,16 @@ model Lessons {
 }
 
 model User {
-  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
-  role               Role                @default(USER)
-  login              String              @unique
-  email              String              @unique
-  profile            Profile?
-  ownCourses         Course[]            @relation("AuthorCourses")
-  purchase           Purchase[]
-  refreshToken       String
-  passwordHash       String
-  teacherApplication TeacherApplication?
+  id                 String              @id @default(auto()) @map("_id") @db.ObjectId // Уникальный идентификатор пользователя
+  role               Role                @default(USER) // Роль пользователя (по умолчанию USER)
+  login              String              @unique // Логин пользователя
+  email              String              @unique // Email пользователя
+  profile            Profile?                    // Профиль пользователя (опционально)
+  ownCourses         Course[]            @relation("AuthorCourses") // Курсы, созданные пользователем
+  purchase           Purchase[]                  // Покупки курсов пользователем
+  refreshToken       String                      // Токен обновления (для аутентификации)
+  passwordHash       String                      // Хэш пароля пользователя
+  teacherApplication TeacherApplication?         // Заявка на преподавание (опционально)
 }
 
 model Purchase {
