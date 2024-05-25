@@ -6,19 +6,57 @@ export class AppLoggerMiddleware implements NestMiddleware {
   private logger = new Logger('HTTP');
 
   use(request: Request, response: Response, next: NextFunction): void {
-    const { ip, method, path: url, headers } = request;
-    const userAgent = request.get('user-agent') || '';
+    const { method, url, headers, query, params, ip } = request;
+    const startTime = process.hrtime();
 
-    // Логирование заголовков запроса
-    this.logger.log(`Request Headers: ${JSON.stringify(headers)}`);
-
-    response.on('close', () => {
+    response.on('finish', () => {
       const { statusCode } = response;
-      const contentLength = response.get('content-length');
+      const [seconds, nanoseconds] = process.hrtime(startTime);
+      const responseTime = (seconds * 1e3 + nanoseconds / 1e6).toFixed(3);
 
-      this.logger.log(
-        `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip}`
-      );
+      const log = {
+        req: {
+          method,
+          url,
+          query,
+          params,
+          headers,
+          remoteAddress: ip,
+          remotePort: request.socket.remotePort,
+        },
+        res: {
+          statusCode,
+          headers: response.getHeaders(),
+        },
+        responseTime,
+      };
+
+      this.logger.log(`INFO: request completed ${JSON.stringify(log)}`);
+    });
+
+    response.on('error', (err) => {
+      const [seconds, nanoseconds] = process.hrtime(startTime);
+      const responseTime = (seconds * 1e3 + nanoseconds / 1e6).toFixed(3);
+
+      const errorLog = {
+        req: {
+          method,
+          url,
+          query,
+          params,
+          headers,
+          remoteAddress: ip,
+          remotePort: request.socket.remotePort,
+        },
+        error: {
+          message: err.message,
+          stack: err.stack,
+        },
+        responseTime,
+      };
+
+      const timestamp = new Date().toISOString();
+      this.logger.error(`ERROR: request failed ${JSON.stringify(errorLog)}`, timestamp);
     });
 
     next();

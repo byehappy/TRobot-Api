@@ -42,7 +42,7 @@ describe('LessonsController', () => {
     expect(controller).toBeDefined();
   });
   describe('create', () => {
-    it('should create a lesson (valid) with admin access', async () => {
+    it('/POST /lessons should create a lesson (valid) with admin access', async () => {
       const token = createTestToken(mockAdminUser);
       const createLessonDto: CreateLessonDto = {
         name: 'New Lesson',
@@ -62,7 +62,7 @@ describe('LessonsController', () => {
       createdLessonIds.push(response.body.id); // Сохраните идентификатор созданного курса
       expect(response.body).toEqual(expect.objectContaining(createLessonDto));
     });
-    it('should create a lesson (valid) with teacher access', async () => {
+    it('/POST /lessons should create a lesson valid with teacher access', async () => {
       const token = createTestToken(mockTeacherUser);
 
       const response = await request(app.getHttpServer())
@@ -75,7 +75,7 @@ describe('LessonsController', () => {
       expect(response.body).toEqual(expect.objectContaining(createLessonDto));
     });
 
-    it('should not create a lesson (invalid courseId)', async () => {
+    it('/POST /lessons should not create a lesson (invalid courseId)', async () => {
       const token = createTestToken(mockAdminUser);
       const createLessonDto: CreateLessonDto = {
         name: 'New Lesson',
@@ -93,7 +93,7 @@ describe('LessonsController', () => {
         .expect(409);
     });
   });
-  describe('findOne', () => {
+  describe('/GET /lessons/:id findOne', () => {
     it('should find a lesson with access', async () => {
       const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImJpYmVyIiwiZW1haWwiOiJiaWJlckBleGFtcGxlLmNvbSIsImlhdCI6MTcxNDI5ODg5NywiZXhwIjoxNzE2ODkwODk3fQ.aKf7v1qhMy9BNiJC_MBzBsdwNrBmHX8s-XsSDeArAYc";
       const lessonId = '6630bbe5adc8fefb76b06aeb';
@@ -115,7 +115,7 @@ describe('LessonsController', () => {
       );
     });
 
-    it('should throw an UnauthorizedException if no access', async () => {
+    it('/GET /lessons/:id should throw an UnauthorizedException if no access', async () => {
       const token = createTestToken(mockRegularUser);
       const lessonId = "6630bbe5adc8fefb76b06aeb";
 

@@ -23,7 +23,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
     const user = await this.userService.getUserByLogin(payload.login);
 
     if (!user) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Не авторизован');
     }
 
     return { ...payload, refreshToken, user };

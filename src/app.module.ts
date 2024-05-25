@@ -15,8 +15,8 @@ import HealthModule from './health/health.module';
 
 @Module({
   imports: [JwtModule.register({
-    secret: process.env.SecretJWT,global:true
-  }),PrismaModule,CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule,HealthModule],
+    secret: process.env.SecretJWT, global: true,
+  }), PrismaModule, CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule, HealthModule],
 })
 
 export class AppModule implements NestModule {

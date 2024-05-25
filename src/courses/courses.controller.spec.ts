@@ -5,7 +5,7 @@ import { AppModule } from '../app.module';
 import { createTestToken, mockTeacherUser, mockAdminUser, mockRegularUser } from '../../test/test-utils/user.mock';
 import { PrismaService } from '../prisma/prisma.service';
 
-describe('CoursesController (e2e)', () => {
+describe('CoursesController', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   const createdCourseIds: string[] = []; // Массив для хранения идентификаторов созданных курсов
@@ -25,7 +25,7 @@ describe('CoursesController (e2e)', () => {
     await app.close();
   });
   describe("valid dto create course",()=>{
-    it('/courses (POST) should create a course with admin token', async () => {
+    it('/POST /courses should create a course with admin token', async () => {
       const token = createTestToken(mockAdminUser);
       const createCourseDto = {
         title: 'Test Course',
@@ -46,7 +46,7 @@ describe('CoursesController (e2e)', () => {
       expect(response.body).toEqual(expect.objectContaining(createCourseDto));
     });
 
-    it('/courses (POST) should create a course with teacher token', async () => {
+    it('/POST /courses should create a course with teacher token', async () => {
       const token = createTestToken(mockTeacherUser);
 
       const createCourseDto = {
@@ -67,7 +67,7 @@ describe('CoursesController (e2e)', () => {
       createdCourseIds.push(response.body.id); // Сохраните идентификатор созданного курса
       expect(response.body).toEqual(expect.objectContaining(createCourseDto));
     });
-  it('/courses (POST) should not create a course with regular user token', async () => {
+  it('/POST /courses should not create a course with regular user token', async () => {
     const token = createTestToken(mockRegularUser);
 
     const createCourseDto = {
@@ -87,7 +87,7 @@ describe('CoursesController (e2e)', () => {
   });
   })
   describe('get course by id', () => {
-    it('/courses/:id (GET) should retrieve course data by id', async () => {
+    it('/GET /courses/:id should retrieve course data by id', async () => {
       const courseId = '662b5eef032696382d9674e6';
       const token = createTestToken(mockRegularUser);
 

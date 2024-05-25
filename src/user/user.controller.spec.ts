@@ -65,7 +65,7 @@ describe('UserController', () => {
   });
 
 
-  it('/POST user/registration', async () => {
+  it('/POST user/registration - successful', async () => {
     const createUserDto: CreateUserDto = {
       login: 'TestName',
       email: 'TestEmail@gmail.com',
@@ -109,10 +109,10 @@ describe('UserController', () => {
       .expect(HttpStatus.CONFLICT)
   });
 
-  it('/POST user/login', async () => {
+  it('/POST user/login - successful', async () => {
     const signInUserDto: SignInUserDto = {
-      login: 'TestName',
-      passwordHash: 'TestPassword1234',
+      login: 'test1',
+      passwordHash: 'qwerty',
     };
 
     const tokens = {
