@@ -12,9 +12,26 @@ import * as process from 'process';
 import { PrismaModule } from './prisma/prisma.module';
 import { AppLoggerMiddleware } from './logger';
 import HealthModule from './health/health.module';
+import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 
 @Module({
-  imports: [JwtModule.register({
+  imports: [WinstonModule.forRoot({
+    transports: [
+      new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.ms(),
+          nestWinstonModuleUtilities.format.nestLike('MyApp', {
+            colors: true,
+            prettyPrint: true,
+            processId: true
+          }),
+        ),
+      }),
+      new winston.transports.File({ filename: 'combined.log' })
+    ],
+  }),JwtModule.register({
     secret: process.env.SecretJWT, global: true,
   }), PrismaModule, CoursesModule, UserModule, LessonsModule, ProfileModule, CategoryModule, PurchaseModule, CourseMaterialModule, TeacherApplicationModule, HealthModule],
 })
