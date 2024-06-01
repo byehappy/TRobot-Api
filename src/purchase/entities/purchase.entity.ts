@@ -13,3 +13,7 @@ export class Purchase {
   @ApiProperty({ example: '2024-04-15T12:00:00Z', description: 'Дата и время совершения покупки' })
   createdAt: Date;
 }
+export class CheckPurchase {
+  @ApiProperty({ example: 'true', description: 'Курс уже приобретён' })
+  purchased: boolean;
+}

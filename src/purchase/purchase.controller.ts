@@ -3,14 +3,15 @@ import { PurchaseService } from './purchase.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { Purchase } from './entities/purchase.entity';
+import { CheckPurchase, Purchase } from './entities/purchase.entity';
 import { AdminGuard } from '../common/guard/admin.guard';
 import { AccessTokenGuard } from '../common/guard/accessToken.guard';
 
 @ApiTags('purchase') // Определяем тег для контроллера
 @Controller('purchase')
 export class PurchaseController {
-  constructor(private readonly purchaseService: PurchaseService) {}
+  constructor(private readonly purchaseService: PurchaseService) {
+  }
 
   @ApiOperation({ summary: 'Создать запись о покупке - accessToken' })
   @ApiBody({ type: CreatePurchaseDto }) // Описываем тело запроса
@@ -24,9 +25,16 @@ export class PurchaseController {
 
   @ApiOperation({ summary: 'Получить все записи о покупках конкретного пользователя' })
   @ApiResponse({ status: 200, description: 'Список записей о покупках', type: [Purchase] })
-  @Get("/user/:id")
+  @Get('/user/:id')
   async findAll(@Param('id') id: string): Promise<Purchase[]> {
     return this.purchaseService.findAll(id);
+  }
+
+  @ApiOperation({ summary: 'Проверка покупки курса' })
+  @ApiResponse({ status: 200, description: 'Курс куплен', type: CheckPurchase })
+  @Get('/check/course/:courseId/:userId')
+  async checkCourse(@Param('courseId') courseId: string, @Param('userId') userId: string): Promise<CheckPurchase>{
+    return this.purchaseService.checkCourse(courseId, userId);
   }
 
   @ApiOperation({ summary: 'Получить запись о покупке по идентификатору' })
@@ -44,7 +52,7 @@ export class PurchaseController {
   @ApiBearerAuth()
   @UseGuards(AdminGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updatePurchaseDto: UpdatePurchaseDto){
+  async update(@Param('id') id: string, @Body() updatePurchaseDto: UpdatePurchaseDto) {
     return this.purchaseService.update(id, updatePurchaseDto);
   }
 
