@@ -1,6 +1,5 @@
 import {
-  CanActivate,
-  ExecutionContext,
+  CanActivate, ExecutionContext,
   HttpException,
   HttpStatus,
   Injectable,
@@ -12,7 +11,7 @@ import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client';
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class TeacherGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
@@ -22,29 +21,28 @@ export class AdminGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     try {
-      const requiredAdmin = this.reflector.getAllAndOverride<boolean>(
-        Role.ADMIN,
-        [context.getHandler(), context.getClass()],
-      );
-      if (!requiredAdmin) {
-        return true;
-      }
-
       const req = context.switchToHttp().getRequest();
       const authHeader = req.headers.authorization;
-      const bearer = authHeader.split(' ')[0];
-      const token = authHeader.split(' ')[1];
 
-      if (bearer !== 'Bearer' || !token) {
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
         throw new UnauthorizedException({
           message: 'Пользователь не авторизован',
         });
       }
 
+      const token = authHeader.split(' ')[1];
       const user = this.jwtService.verify(token);
       req.user = user;
-      return user.role;
+
+      if (user.role !== Role.ADMIN && user.role !== Role.TEACHER) {
+        throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN);
+      }
+
+      return true;
     } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
       throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN);
     }
   }

@@ -1,0 +1,78 @@
+config:
+  target: "http://localhost:3001/api"
+  phases:
+    - duration: 30                   # Продолжительность теста в секундах
+      arrivalRate: 10                # Количество новых пользователей в секунду
+      name: user_login
+    - duration: 30                   # Продолжительность теста в секундах
+      arrivalRate: 10                # Количество новых пользователей в секунду
+      name: admin_login
+    - duration: 30                   # Продолжительность теста в секундах
+      arrivalRate: 10                # Количество новых пользователей в секунду
+      name: get_courses
+    - duration: 30                   # Продолжительность теста в секундах
+      arrivalRate: 10                # Количество новых пользователей в секунду
+      name: get_users
+    - duration: 30                   # Продолжительность теста в секундах
+      arrivalRate: 10                # Количество новых пользователей в секунду
+      name: get_categories
+    - duration: 30                   # Продолжительность теста в секундах
+      arrivalRate: 10                # Количество новых пользователей в секунду
+      name: get_course_materials
+  payload:
+    - path: "user.csv"
+      loadAll: true
+      fields:
+        - "login"
+        - "password"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: User Login
+    flow:
+      - post:
+          url: "/user/login"
+          json: {
+            login: '{{ login }}',
+            passwordHash: '{{ password }}' }
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
+
+  - name: Admin Login
+    flow:
+      - post:
+          url: "/user/login"
+          json: {
+            login: 'admin',
+            passwordHash: 'qwerty' }
+          capture:
+            - json: "$.accessToken"
+              as: "adminAccessToken"
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
+
+  - name: Get Courses
+    flow:
+      - get:
+          url: "/courses"
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
+
+  - name: Get Users
+    flow:
+      - get:
+          url: "/user"
+          headers:
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpZCI6IjY2MmI1ZTQxYTEzMDM0N2E0YjZmZGZkMSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTcxNjU1NjE1OCwiZXhwIjoxNzE2NTY2OTU4fQ.nKZW4IMhbxM4DQxXNdBq0ICB7p1dTOBz6xyBa7sOWkU"
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
+
+  - name: Get Categories
+    flow:
+      - get:
+          url: "/category"
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
+
+  - name: Get Course Materials
+    flow:
+      - get:
+          url: "/course-material"
+      - think: 1  # Задержка между запросами, чтобы симулировать реального пользователя
