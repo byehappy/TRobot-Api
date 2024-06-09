@@ -27,19 +27,27 @@ export class UserService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    return await this.prisma.user.findUnique({
+    const res = await this.prisma.user.findUnique({
       where: {
         email: email,
       },
     });
+    if (!res){
+      throw new ConflictException('Неправильный логин');
+    }
+    return res
   }
 
   async getUserByLogin(login: string): Promise<User> {
-    return await this.prisma.user.findFirst({
+    const res = await this.prisma.user.findFirst({
       where: {
         login: login,
       },
     });
+    if (!res){
+      throw new ConflictException('Неправильный логин');
+    }
+    return res
   }
 
   async registration(userData: CreateUserDto): Promise<User> {
