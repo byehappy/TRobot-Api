@@ -26,7 +26,7 @@ export class LessonAccessGuard implements CanActivate {
     const hasAccess = await this.checkLessonAccess(userId, lessonId);
 
     if (!hasAccess) {
-      throw new ForbiddenException('Недостаточно прав для доступа к уроку');
+      throw new ForbiddenException('Курс не куплен');
     }
 
     return true;

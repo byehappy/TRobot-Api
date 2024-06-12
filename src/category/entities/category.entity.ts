@@ -6,4 +6,5 @@ export class CategoryEntity {
 
   @ApiProperty({ example: 'JavaScript', description: 'Название категории' })
   nameCategory: string;
+
 }

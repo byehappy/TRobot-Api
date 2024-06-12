@@ -26,16 +26,19 @@ export class UserService {
     return findUser;
   }
 
-  async getUserByEmail(email: string): Promise<User> {
-    const res = await this.prisma.user.findUnique({
+  async getEmailExist(email: string): Promise<User> {
+    return await this.prisma.user.findUnique({
       where: {
         email: email,
       },
     });
-    if (!res){
-      throw new ConflictException('Неправильный логин');
-    }
-    return res
+  }
+  async getLoginExist(login: string): Promise<User> {
+    return await this.prisma.user.findUnique({
+      where: {
+        login: login,
+      },
+    })
   }
 
   async getUserByLogin(login: string): Promise<User> {
@@ -53,11 +56,11 @@ export class UserService {
   async registration(userData: CreateUserDto): Promise<User> {
     // Проверяем, существует ли пользователь с таким логином или email
 
-    const userByEmail = await this.getUserByEmail(userData.email);
+    const userByEmail = await this.getEmailExist(userData.email);
     if (userByEmail) {
       throw new ConflictException('Пользователь с таким email уже существует', 'email');
     }
-    const userByLogin = await this.getUserByLogin(userData.login);
+    const userByLogin = await this.getLoginExist(userData.login);
     if (userByLogin) {
       throw new ConflictException('Пользователь с таким логином уже существует', 'login');
     }

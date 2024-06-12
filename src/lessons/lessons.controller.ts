@@ -34,14 +34,6 @@ export class LessonsController {
     return this.lessonsService.create(createLessonDto);
   }
 
-  @ApiOperation({ summary: 'Получить все уроки' })
-  @ApiOkResponse({ description: 'Все уроки успешно получены.',type:[Lesson] })
-  @ApiParam({ name: 'id', description: 'ID курса', type: 'string' })
-  @Get("/course/:id")
-  findAll(@Param('id') id: string) {
-    return this.lessonsService.findAll(id);
-  }
-
   @ApiOperation({ summary: 'Получить урок по ID - токен с id пользователя у которого куплен курс' })
   @ApiOkResponse({ description: 'Урок успешно получен.',type:Lesson })
   @ApiNotFoundResponse({ description: 'Урок не найден.' })
